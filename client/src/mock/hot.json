@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "data": {
+    "weibo": {
+      "source": "weibo",
+      "sourceName": "微博",
+      "listName": "微博热搜榜",
+      "updatedAt": "2025-06-11T10:30:00.000Z",
+      "fromCache": false,
+      "items": [
+        { "rank": 1, "title": "某热点事件持续发酵", "url": "https://s.weibo.com/weibo?q=热点事件", "heat": "532万" },
+        { "rank": 2, "title": "另一热点话题上榜", "url": "https://s.weibo.com/weibo?q=热点话题", "heat": "218万" },
+        { "rank": 3, "title": "明星官宣引发全网讨论", "url": "https://s.weibo.com/weibo?q=明星官宣", "heat": "186万" },
+        { "rank": 4, "title": "科技新品发布会定档", "url": "https://s.weibo.com/weibo?q=科技新品", "heat": "142万" },
+        { "rank": 5, "title": "体育赛事决赛精彩瞬间", "url": "https://s.weibo.com/weibo?q=体育赛事", "heat": "98万" },
+        { "rank": 6, "title": "城市文旅活动火爆出圈", "url": "https://s.weibo.com/weibo?q=文旅活动", "heat": "76万" },
+        { "rank": 7, "title": "职场话题再度引发共鸣", "url": "https://s.weibo.com/weibo?q=职场话题", "heat": "65万" },
+        { "rank": 8, "title": "电影票房突破新纪录", "url": "https://s.weibo.com/weibo?q=电影票房", "heat": "54万" },
+        { "rank": 9, "title": "教育政策最新解读", "url": "https://s.weibo.com/weibo?q=教育政策", "heat": "43万" },
+        { "rank": 10, "title": "美食探店视频刷屏", "url": "https://s.weibo.com/weibo?q=美食探店", "heat": "38万" }
+      ]
+    },
+    "zhihu": {
+      "source": "zhihu",
+      "sourceName": "知乎",
+      "listName": "知乎热榜",
+      "updatedAt": "2025-06-11T10:28:00.000Z",
+      "fromCache": false,
+      "items": [
+        { "rank": 1, "title": "如何看待 AI 编程工具的崛起？", "url": "https://www.zhihu.com/question/10000001", "heat": "580 万热度" },
+        { "rank": 2, "title": "为什么年轻人开始追求极简生活？", "url": "https://www.zhihu.com/question/10000002", "heat": "420 万热度" },
+        { "rank": 3, "title": "有哪些被低估的编程语言？", "url": "https://www.zhihu.com/question/10000003", "heat": "310 万热度" },
+        { "rank": 4, "title": "远程办公三年后的真实体验", "url": "https://www.zhihu.com/question/10000004", "heat": "256 万热度" },
+        { "rank": 5, "title": "如何系统性地提升写作能力？", "url": "https://www.zhihu.com/question/10000005", "heat": "198 万热度" },
+        { "rank": 6, "title": "2025 年最值得关注的科技趋势", "url": "https://www.zhihu.com/question/10000006", "heat": "175 万热度" },
+        { "rank": 7, "title": "副业收入超过主业是什么体验？", "url": "https://www.zhihu.com/question/10000007", "heat": "142 万热度" },
+        { "rank": 8, "title": "为什么越来越多人选择独居？", "url": "https://www.zhihu.com/question/10000008", "heat": "118 万热度" },
+        { "rank": 9, "title": "有哪些高效的学习方法？", "url": "https://www.zhihu.com/question/10000009", "heat": "96 万热度" },
+        { "rank": 10, "title": "如何评价最新一轮互联网裁员？", "url": "https://www.zhihu.com/question/10000010", "heat": "82 万热度" }
+      ]
+    },
+    "bilibili": {
+      "source": "bilibili",
+      "sourceName": "B站",
+      "listName": "B站热搜",
+      "updatedAt": "2025-06-11T10:32:00.000Z",
+      "fromCache": false,
+      "items": [
+        { "rank": 1, "title": "【整活】UP 主挑战 24 小时不眨眼", "url": "https://www.bilibili.com/video/BV1000001", "heat": "245.6万" },
+        { "rank": 2, "title": "原神新版本深度测评", "url": "https://www.bilibili.com/video/BV1000002", "heat": "198.3万" },
+        { "rank": 3, "title": "一口气看完经典动漫解说", "url": "https://www.bilibili.com/video/BV1000003", "heat": "176.1万" },
+        { "rank": 4, "title": "程序员的一天 Vlog", "url": "https://www.bilibili.com/video/BV1000004", "heat": "152.8万" },
+        { "rank": 5, "title": "美食 UP 主复刻国宴菜", "url": "https://www.bilibili.com/video/BV1000005", "heat": "134.5万" },
+        { "rank": 6, "title": "考研上岸经验全分享", "url": "https://www.bilibili.com/video/BV1000006", "heat": "112.2万" },
+        { "rank": 7, "title": "手工区大神新作发布", "url": "https://www.bilibili.com/video/BV1000007", "heat": "98.7万" },
+        { "rank": 8, "title": "科技区年度盘点 TOP10", "url": "https://www.bilibili.com/video/BV1000008", "heat": "87.4万" },
+        { "rank": 9, "title": "舞蹈区热门翻跳合集", "url": "https://www.bilibili.com/video/BV1000009", "heat": "76.9万" },
+        { "rank": 10, "title": "知识区科普：量子计算入门", "url": "https://www.bilibili.com/video/BV1000010", "heat": "65.3万" }
+      ]
+    }
+  },
+  "timestamp": "2025-06-11T10:32:00.000Z"
+}
