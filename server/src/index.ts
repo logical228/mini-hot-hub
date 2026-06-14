@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import hotRouter from './routes/hot.js';
+import { listActiveDevMockFails } from './utils/devFailSwitch.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -22,4 +23,11 @@ app.use('/api/hot', hotRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
+
+  const mockFails = listActiveDevMockFails();
+  if (mockFails.length > 0) {
+    console.warn(
+      `[dev] 模拟抓取失败已启用: ${mockFails.join(', ')}（对应卡片将展示 error 态）`,
+    );
+  }
 });

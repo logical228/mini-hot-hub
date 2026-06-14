@@ -1,3 +1,45 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant cyber (&:where(.cyber, .cyber *));
+
+@theme {
+  --color-surface: #fafbfc;
+  --color-surface-elevated: #ffffff;
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-weibo: #e6162d;
+  --color-zhihu: #0084ff;
+  --color-bilibili: #fb7299;
+  --color-cyan-neon: #00ffff;
+  --color-lime-neon: #39ff14;
+  --color-magenta-neon: #ff00ff;
+  --font-display: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
+}
+
+.dark {
+  --color-surface: #0f1117;
+  --color-surface-elevated: #1a1d27;
+  --color-text-primary: #e8eaed;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-border: #2d3142;
+}
+
+.cyber {
+  --color-surface: #050810;
+  --color-surface-elevated: rgba(10, 14, 39, 0.65);
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #8a8a8a;
+  --color-text-muted: #8a8a8a;
+  --color-border: rgba(0, 255, 255, 0.15);
+  --color-weibo: #00ffff;
+  --color-zhihu: #39ff14;
+  --color-bilibili: #ff00ff;
+}
+
 *,
 *::before,
 *::after {
@@ -9,21 +51,194 @@ body {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  color: #1a1a2e;
-  background-color: #fafbfc;
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.cyber body,
+.cyber {
+  font-family: var(--font-display);
 }
 
 #root {
   min-height: 100vh;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.font-display {
+  font-family: var(--font-display);
 }
 
-a:hover {
-  text-decoration: underline;
+/* ── Cyber title glow ── */
+.cyber-title {
+  color: #e0e0e0;
+  text-shadow:
+    0 0 10px rgba(0, 255, 255, 0.8),
+    0 0 30px rgba(0, 255, 255, 0.4),
+    0 0 60px rgba(255, 0, 255, 0.2);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes scanline-drift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+.animate-scanline {
+  animation: scanline-drift 8s linear infinite;
+}
+
+/* ── Cyber card shell ── */
+.cyber-card {
+  background: rgba(10, 14, 39, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 255, 255, 0.12);
+}
+
+.cyber-card-header {
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Hot list item: glass + flowing border ── */
+.cyber-hot-item {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.cyber-hot-item::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--border-angle, 0deg),
+    transparent 0%,
+    var(--neon-color, #00ffff) 25%,
+    transparent 50%,
+    var(--neon-color, #00ffff) 75%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cyber-hot-item:hover::before {
+  opacity: 1;
+  animation: border-spin 2s linear infinite;
+}
+
+.cyber-hot-item:hover {
+  border-color: transparent;
+  box-shadow:
+    0 0 20px color-mix(in srgb, var(--neon-color) 30%, transparent),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+.cyber-btn {
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  background: rgba(0, 255, 255, 0.08);
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  transition: all 0.2s ease;
+}
+
+.cyber-btn:hover {
+  background: rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.35);
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple 0.55s ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-border) 60%, transparent) 25%,
+    color-mix(in srgb, var(--color-border) 30%, transparent) 50%,
+    color-mix(in srgb, var(--color-border) 60%, transparent) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+}
+
+.cyber .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 255, 0.05) 25%,
+    rgba(0, 255, 255, 0.15) 50%,
+    rgba(0, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
 }

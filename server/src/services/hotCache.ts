@@ -5,6 +5,8 @@ import { fetchZhihuHot } from './zhihu.js';
 import { getPlatformHotMock, HOT_SOURCES } from './platform.js';
 import type { HotSource } from './platform.js';
 import { getCache, setCache } from '../utils/cache.js';
+import { assertDevFetchNotMockFailed, isDevMockFailEnabled } from '../utils/devFailSwitch.js';
+import { enrichPlatform } from '../utils/enrichHotItems.js';
 
 const ERROR_MESSAGE = '该榜单暂时无法加载，请稍后再试';
 
@@ -57,16 +59,17 @@ async function getLiveHotCached(
     return getPlatformHotCached(source, forceRefresh);
   }
 
-  if (!forceRefresh) {
+  if (!forceRefresh && !isDevMockFailEnabled(source)) {
     const cached = getCache<HotPlatform>(cacheKey);
 
     if (cached) {
-      return { platform: cached, fromCache: true, cacheHit: true };
+      return { platform: enrichPlatform(cached), fromCache: true, cacheHit: true };
     }
   }
 
   try {
-    const platform = await fetcher();
+    assertDevFetchNotMockFailed(source);
+    const platform = enrichPlatform(await fetcher());
     setCache(cacheKey, platform);
     return { platform, fromCache: false, cacheHit: false };
   } catch (err) {
@@ -89,11 +92,11 @@ export function getPlatformHotCached(
     const cached = getCache<HotPlatform>(cacheKey);
 
     if (cached) {
-      return { platform: cached, fromCache: true, cacheHit: true };
+      return { platform: enrichPlatform(cached), fromCache: true, cacheHit: true };
     }
   }
 
-  const platform = getPlatformHotMock(source);
+  const platform = enrichPlatform(getPlatformHotMock(source));
   setCache(cacheKey, platform);
 
   return { platform, fromCache: false, cacheHit: false };

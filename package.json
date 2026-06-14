@@ -1,0 +1,19 @@
+{
+  "name": "mini-hot-hub",
+  "private": true,
+  "version": "0.0.0",
+  "description": "迷你今日热榜 — 微博 / 知乎 / B站 热搜聚合",
+  "scripts": {
+    "install:all": "npm install --prefix client && npm install --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev": "concurrently -n client,server -c cyan,magenta \"npm run dev:client\" \"npm run dev:server\"",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build": "npm run build:server && npm run build:client",
+    "start:server": "npm run start:prod --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

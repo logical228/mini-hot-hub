@@ -1,8 +1,11 @@
+export type HotCategory = 'politics' | 'sports' | 'entertainment' | 'tech';
+
 export interface HotItem {
   rank: number;
   title: string;
   url: string;
   heat?: string;
+  category?: HotCategory;
   extra?: Record<string, unknown>;
 }
 

@@ -18,19 +18,24 @@
 
 ## 安装依赖
 
-前后端各自独立管理依赖，需分别在两个目录执行安装：
+前后端各自独立管理依赖。推荐在**项目根目录**一键安装：
 
 ```bash
-# 前端
-cd client
+# 根目录：安装 concurrently（用于 npm run dev）
 npm install
 
-# 后端（新开终端，或返回项目根目录后执行）
-cd server
-npm install
+# 安装 client + server 依赖
+npm run install:all
 ```
 
-首次克隆仓库后，两个目录都需要执行一次 `npm install`。
+也可分别在子目录安装：
+
+```bash
+cd client && npm install
+cd server && npm install
+```
+
+首次克隆仓库后，需完成上述安装后再启动开发环境。
 
 ---
 
@@ -38,7 +43,24 @@ npm install
 
 **前后端需同时运行**，前端通过 Vite 代理将 `/api` 转发至后端。
 
-### 方式一：两个终端（推荐）
+### 方式一：根目录一条命令（推荐）
+
+在项目根目录执行：
+
+```bash
+npm run dev
+```
+
+等同于同时启动 `dev:client`（5173）与 `dev:server`（3001）。也可单独启动：
+
+```bash
+npm run dev:server   # 仅后端
+npm run dev:client   # 仅前端
+```
+
+浏览器打开 http://localhost:5173/
+
+### 方式二：两个终端
 
 **终端 1 — 后端**
 
@@ -58,7 +80,7 @@ npm run dev
 
 看到 `Local: http://localhost:5173/` 后，在浏览器打开该地址。
 
-### 方式二：生产模式预览
+### 方式三：生产模式预览
 
 ```bash
 # 构建并启动后端
@@ -114,6 +136,34 @@ GET /api/hot/weibo?refresh=1
 |---|---|---|---|
 | 缓存 TTL | `CACHE_TTL` | `600`（秒） | 每个平台独立缓存，默认 **10 分钟** 内复用同一份数据 |
 | 上游超时 | `FETCH_TIMEOUT` | `5000`（毫秒） | 单次抓取超时时间 |
+
+### 开发环境：模拟平台失败（验证 error 卡片）
+
+仅在 `NODE_ENV !== production` 时生效。设置后对应平台**跳过缓存**，每次请求均返回 `error: true` 的 `HotPlatform`，其他平台不受影响。
+
+| 环境变量 | 说明 |
+|---|---|
+| `MOCK_FAIL_WEIBO=1` | 模拟微博抓取失败 |
+| `MOCK_FAIL_ZHIHU=1` | 模拟知乎抓取失败 |
+| `MOCK_FAIL_BILIBILI=1` | 模拟 B 站抓取失败 |
+| `MOCK_FAIL_ALL=1` | 模拟全部平台失败 |
+
+**Windows PowerShell 示例**（在 `server/` 目录）：
+
+```powershell
+$env:MOCK_FAIL_WEIBO = "1"
+npm run dev
+```
+
+**macOS / Linux**：
+
+```bash
+MOCK_FAIL_WEIBO=1 npm run dev
+```
+
+启动后终端会输出 `[dev] 模拟抓取失败已启用: weibo`。浏览器刷新首页即可看到微博卡片 error 态；知乎 / B 站卡片仍正常。
+
+可将变量写入 `server/.env.example` 所示格式，配合 shell 导出或 IDE 运行配置使用（本仓库未内置 dotenv，需自行注入环境变量）。
 
 - 各平台缓存**互相独立**：刷新微博（`?refresh=1`）不会清除知乎 / B 站缓存。
 - 缓存命中时，响应头 `X-Cache: HIT`，JSON 中 `fromCache: true`；`updatedAt` 为写入缓存时的快照时间，缓存有效期内保持不变。
@@ -215,6 +265,58 @@ proxy: {
 1. 打开浏览器开发者工具 → Network，查看 `/api/hot` 请求状态
 2. 若状态为 `(failed)` 或 `502`：后端未启动或代理 target 错误
 3. 若状态为 `404`：检查后端路由与请求路径是否匹配
+
+---
+
+## Railway 部署（从仓库根目录启动 server）
+
+本项目前后端分离：**Railway 仅部署 `server/`**，前端可另行部署到 Vercel / Netlify 等，并通过 `VITE_API_BASE` 指向 Railway 后端地址。
+
+在 Railway 新建 Service，连接本仓库，**Root Directory 留空**（使用仓库根目录 `/`），配置如下：
+
+| Railway 配置项 | 推荐值 | 说明 |
+|---|---|---|
+| **Root Directory** | `/`（默认，不填） | 从 monorepo 根目录构建 |
+| **Build Command** | `npm install --prefix server && npm run build --prefix server` | 安装 server 依赖并 `tsc` 编译到 `server/dist/` |
+| **Start Command** | `npm run start:prod --prefix server` | 等价于 `node server/dist/index.js` |
+| **Watch Paths** | `server/**` | 可选；仅 server 变更时触发 redeploy |
+
+也可使用根目录 `package.json` 中的脚本（需先在 Build 中安装根依赖）：
+
+| Railway 配置项 | 值 |
+|---|---|
+| **Build Command** | `npm install && npm run install:all && npm run build:server` |
+| **Start Command** | `npm run start:server` |
+
+**环境变量**（Railway → Variables）：
+
+| 变量 | 说明 |
+|---|---|
+| `PORT` | Railway 自动注入，无需手动设置 |
+| `CACHE_TTL` | 缓存秒数，默认 `600` |
+| `FETCH_TIMEOUT` | 上游超时毫秒，默认 `5000` |
+| `NODE_ENV` | 设为 `production` |
+
+部署完成后访问 `https://<your-app>.up.railway.app/api/health` 应返回 `{ "ok": true }`。
+
+> **说明**：若将 Root Directory 设为 `server`，Build / Start 可简化为 `npm install && npm run build` 与 `npm run start:prod`，与从根目录部署效果相同。
+
+---
+
+## 根目录脚本速查
+
+在项目根目录 `package.json` 中提供：
+
+| 命令 | 说明 |
+|---|---|
+| `npm run install:all` | 安装 client + server 依赖 |
+| `npm run dev` | concurrently 同时启动前后端 |
+| `npm run dev:client` | 仅 Vite 前端 |
+| `npm run dev:server` | 仅 Express 后端 |
+| `npm run build` | 先后构建 server、client |
+| `npm run build:server` | 仅编译后端 |
+| `npm run build:client` | 仅构建前端 |
+| `npm run start:server` | 生产模式启动后端（`node server/dist/index.js`） |
 
 ---
 
