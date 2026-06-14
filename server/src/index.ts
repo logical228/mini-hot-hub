@@ -5,9 +5,13 @@ import { listActiveDevMockFails } from './utils/devFailSwitch.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
-const CLIENT_ORIGIN = 'http://localhost:5173';
 
-app.use(cors({ origin: CLIENT_ORIGIN }));
+/** 允许的前端来源，逗号分隔；生产环境在 Railway 设置 CLIENT_ORIGIN */const CLIENT_ORIGINS = (process.env.CLIENT_ORIGIN ?? 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({ origin: CLIENT_ORIGINS }));
 app.use(express.json());
 
 app.use((req, _res, next) => {
