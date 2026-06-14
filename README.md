@@ -277,16 +277,32 @@ proxy: {
 | Railway 配置项 | 推荐值 | 说明 |
 |---|---|---|
 | **Root Directory** | `/`（默认，不填） | 从 monorepo 根目录构建 |
-| **Build Command** | `npm install --prefix server && npm run build --prefix server` | 安装 server 依赖并 `tsc` 编译到 `server/dist/` |
+| **Build Command** | `npm run build:server:deploy` | 安装含 dev 依赖后 `tsc` 编译（见下方说明） |
 | **Start Command** | `npm run start:prod --prefix server` | 等价于 `node server/dist/index.js` |
 | **Watch Paths** | `server/**` | 可选；仅 server 变更时触发 redeploy |
 
-也可使用根目录 `package.json` 中的脚本（需先在 Build 中安装根依赖）：
+**⚠️ 常见错误 `sh: tsc: not found`**
 
-| Railway 配置项 | 值 |
+Railway 生产构建默认 `npm install --omit=dev`，不会安装 `typescript`（在 `server/devDependencies` 中），导致 `npm run build` 找不到 `tsc`。
+
+**请勿**在 Railway 后端服务使用根目录的 `npm run build`（还会多余构建 client）。
+
+正确做法二选一：
+
+```bash
+# 方式 A（推荐）：根目录 Build Command
+npm run build:server:deploy
+
+# 方式 B：等价命令
+npm install --prefix server --include=dev && npm run build --prefix server
+```
+
+若 **Root Directory 设为 `server/`**：
+
+| 配置项 | 值 |
 |---|---|
-| **Build Command** | `npm install && npm run install:all && npm run build:server` |
-| **Start Command** | `npm run start:server` |
+| **Build Command** | `npm install --include=dev && npm run build` |
+| **Start Command** | `npm run start:prod` |
 
 **环境变量**（Railway → Variables）：
 
@@ -315,6 +331,7 @@ proxy: {
 | `npm run dev:server` | 仅 Express 后端 |
 | `npm run build` | 先后构建 server、client |
 | `npm run build:server` | 仅编译后端 |
+| `npm run build:server:deploy` | Railway 用：含 dev 依赖安装 + 编译后端 |
 | `npm run build:client` | 仅构建前端 |
 | `npm run start:server` | 生产模式启动后端（`node server/dist/index.js`） |
 
