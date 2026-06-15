@@ -1,7 +1,7 @@
 import type { HotAggregateResponse, HotPlatform, HotSource } from '../types/hot';
-import { resolveApiBase } from './config';
+import { getApiBase } from './config';
 
-const API_BASE = resolveApiBase();
+const API_BASE = getApiBase();
 
 interface FetchOptions {
   /** 开发环境跳过缓存，重试时建议开启 */
